@@ -1,0 +1,1327 @@
+#:kivy 2.0.0
+#:import utils kivy.utils
+
+<Message>:
+    orientation: 'horizontal'
+    size_hint_y: None
+    height: max(message_label.height + 40, 50)
+    padding: [15, 10]
+    spacing: 10
+
+    canvas.before:
+        Color:
+            rgba: (0.4, 0.5, 0.9, 1) if root.is_user else (0.15, 0.15, 0.3, 1)
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [20]
+
+    BoxLayout:
+        orientation: 'horizontal'
+        spacing: 10
+        size_hint_x: 0.9
+        pos_hint: {'right': 1} if root.is_user else {'x': 0}
+
+        Image:
+            source: 'assets/user.png' if root.is_user else 'assets/bot.png'
+            size_hint: None, None
+            size: 35, 35
+            pos_hint: {'center_y': .5}
+
+        BoxLayout:
+            orientation: 'vertical'
+            padding: [5, 5]
+            spacing: 5
+
+            Label:
+                id: message_label
+                text: root.message_text
+                color: (1, 1, 1, 1)
+                size_hint_y: None
+                height: self.texture_size[1]
+                text_size: self.width, None
+                padding: [5, 5]
+                halign: 'left'
+                valign: 'middle'
+                markup: True
+
+            Label:
+                size_hint_y: None
+                height: 20
+                text: f'[Kullanılan kredi: {root.cost}]' if not root.is_user and root.cost > 0 else ''
+                color: (1, 0.8, 0.2, 1)
+                font_size: '12sp'
+                halign: 'right'
+
+<WelcomeScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [40, 60]
+        spacing: 30
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: 'ECHO AI'
+            font_size: '48sp'
+            size_hint_y: None
+            height: 80
+            color: 1, 1, 1, 1
+            bold: True
+
+        Label:
+            text: 'Welcome'
+            font_size: '32sp'
+            size_hint_y: None
+            height: 60
+            color: 0.4, 0.5, 0.9, 1
+            bold: True
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 200, 200
+            pos_hint: {'center_x': .5}
+
+        Label:
+            text: 'Your AI Chat Assistant'
+            font_size: '20sp'
+            size_hint_y: None
+            height: 40
+            color: 0.7, 0.7, 0.8, 1
+
+        Widget:
+            size_hint_y: 0.2
+
+        Button:
+            text: 'Continue'
+            size_hint_y: None
+            height: 60
+            size_hint_x: 0.8
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            color: 1, 1, 1, 1
+            bold: True
+            font_size: '20sp'
+            on_release: app.root.current = 'user_info'
+            canvas.before:
+                Color:
+                    rgba: 0.4, 0.5, 0.9, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [30]
+
+        Widget:
+            size_hint_y: 0.1
+
+<LoginScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Widget:
+            size_hint_y: 0.1
+
+        Label:
+            text: 'ECHO AI'
+            font_size: '32sp'
+            size_hint_y: None
+            height: 50
+            color: 1, 1, 1, 1
+            bold: True
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 120, 120
+            pos_hint: {'center_x': .5}
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 15
+            size_hint_y: None
+            height: 180
+            pos_hint: {'center_x': .5}
+
+            TextInput:
+                id: username
+                hint_text: 'Email'
+                multiline: False
+                size_hint_y: None
+                height: 55
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            TextInput:
+                id: password
+                hint_text: 'Password'
+                multiline: False
+                password: True
+                size_hint_y: None
+                height: 55
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            Button:
+                text: 'Login'
+                size_hint_y: None
+                height: 55
+                background_color: 0, 0, 0, 0
+                color: 1, 1, 1, 1
+                bold: True
+                font_size: '18sp'
+                on_release: root.login()
+                canvas.before:
+                    Color:
+                        rgba: 0.4, 0.5, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [27]
+
+        Button:
+            text: 'Forgot password?'
+            size_hint_y: None
+            height: 40
+            background_color: 0, 0, 0, 0
+            color: 0.4, 0.5, 0.9, 1
+            font_size: '16sp'
+            on_release: root.forgot_password()
+
+        Widget:
+            size_hint_y: 0.1
+
+        Label:
+            text: 'Have no account yet?'
+            color: 0.7, 0.7, 0.8, 1
+            size_hint_y: None
+            height: 30
+            font_size: '16sp'
+
+        Button:
+            text: 'Sign Up'
+            size_hint_y: None
+            height: 55
+            size_hint_x: 0.8
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            color: 1, 1, 1, 1
+            font_size: '18sp'
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [27]
+
+<ForgotPasswordScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 150, 150
+            pos_hint: {'center_x': .5}
+
+        Label:
+            text: 'Forgot\nPassword?'
+            font_size: '28sp'
+            size_hint_y: None
+            height: 80
+            color: 1, 1, 1, 1
+            bold: True
+            halign: 'left'
+
+        Label:
+            text: "Don't worry! It happens. Please enter the phone number we will send the OTP in this phone number."
+            color: 0.7, 0.7, 0.8, 1
+            size_hint_y: None
+            height: 60
+            text_size: self.width, None
+            halign: 'left'
+
+        TextInput:
+            id: phone
+            hint_text: 'Enter the phone Number'
+            multiline: False
+            size_hint_y: None
+            height: 50
+            padding: [20, 15]
+            background_color: 0.15, 0.15, 0.3, 1
+            cursor_color: 1, 1, 1, 1
+            foreground_color: 1, 1, 1, 1
+            hint_text_color: 0.5, 0.5, 0.7, 1
+            font_size: '16sp'
+
+        Widget:
+            size_hint_y: 0.2
+
+        Button:
+            text: 'Continue'
+            size_hint_y: None
+            height: 50
+            background_color: 0, 0, 0, 0
+            color: 1, 1, 1, 1
+            bold: True
+            on_release: root.send_code()
+            canvas.before:
+                Color:
+                    rgba: 0.4, 0.5, 0.9, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [25]
+
+        Button:
+            text: 'Back'
+            size_hint_y: None
+            height: 40
+            background_color: 0, 0, 0, 0
+            color: 0.4, 0.5, 0.9, 1
+            on_release: root.back_to_login()
+
+<VerificationScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [40, 60]
+        spacing: 30
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Widget:
+            size_hint_y: 0.1
+
+        Label:
+            text: 'ECHO AI'
+            font_size: '40sp'
+            size_hint_y: None
+            height: 60
+            color: 1, 1, 1, 1
+            bold: True
+
+        Label:
+            text: 'Phone Verification'
+            font_size: '24sp'
+            size_hint_y: None
+            height: 40
+            color: 0.4, 0.5, 0.9, 1
+            bold: True
+
+        Label:
+            text: "Please enter your phone number.\nWe'll send you a verification code."
+            font_size: '16sp'
+            size_hint_y: None
+            height: 60
+            color: 0.7, 0.7, 0.8, 1
+            halign: 'center'
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 15
+            size_hint_y: None
+            height: 180
+            pos_hint: {'center_x': .5}
+
+            TextInput:
+                id: phone_number
+                hint_text: 'Phone Number'
+                multiline: False
+                size_hint_y: None
+                height: 55
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            Button:
+                text: 'Send Code'
+                size_hint_y: None
+                height: 55
+                background_color: 0, 0, 0, 0
+                color: 1, 1, 1, 1
+                bold: True
+                font_size: '18sp'
+                on_release: root.send_verification_code()
+                canvas.before:
+                    Color:
+                        rgba: 0.4, 0.5, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [27]
+
+            BoxLayout:
+                orientation: 'horizontal'
+                size_hint_y: None
+                height: 55
+                spacing: 10
+
+                TextInput:
+                    id: verification_code
+                    hint_text: 'Enter Code'
+                    multiline: False
+                    size_hint_x: 0.7
+                    padding: [20, 15]
+                    background_color: 0.15, 0.15, 0.3, 1
+                    cursor_color: 1, 1, 1, 1
+                    foreground_color: 1, 1, 1, 1
+                    hint_text_color: 0.5, 0.5, 0.7, 1
+                    font_size: '16sp'
+                    disabled: True
+
+                Button:
+                    text: 'Verify'
+                    size_hint_x: 0.3
+                    background_color: 0, 0, 0, 0
+                    disabled: True
+                    id: verify_button
+                    on_release: root.verify_code()
+                    canvas.before:
+                        Color:
+                            rgba: (0.4, 0.5, 0.9, 1) if not self.disabled else (0.2, 0.2, 0.3, 1)
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [27]
+
+        Label:
+            id: timer_label
+            text: ''
+            size_hint_y: None
+            height: 30
+            color: 0.7, 0.7, 0.8, 1
+            font_size: '14sp'
+
+        Button:
+            text: 'Back'
+            size_hint_y: None
+            height: 40
+            size_hint_x: 0.3
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            color: 0.4, 0.5, 0.9, 1
+            on_release: root.manager.current = 'forgot_password'
+
+        Widget:
+            size_hint_y: 0.2
+
+<NewPasswordScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 200, 200
+            pos_hint: {'center_x': .5}
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 10
+            size_hint_y: None
+            height: 200
+            pos_hint: {'center_x': .5, 'center_y': .5}
+
+            canvas.before:
+                Color:
+                    rgba: 0.95, 0.95, 0.95, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [20]
+
+            Label:
+                text: 'Yeni şifrenizi oluşturun'
+                color: 0, 0, 0, 1
+                size_hint_y: None
+                height: 30
+
+            TextInput:
+                id: new_password
+                hint_text: 'Yeni Şifre (6 karakter)'
+                multiline: False
+                password: True
+                size_hint_y: None
+                height: 40
+                padding: [20, 10]
+                background_color: 1, 1, 1, 1
+                cursor_color: 0, 0, 0, 1
+                foreground_color: 0, 0, 0, 1
+                hint_text_color: 0.5, 0.5, 0.5, 1
+
+            TextInput:
+                id: confirm_password
+                hint_text: 'Şifreyi Tekrar Girin'
+                multiline: False
+                password: True
+                size_hint_y: None
+                height: 40
+                padding: [20, 10]
+                background_color: 1, 1, 1, 1
+                cursor_color: 0, 0, 0, 1
+                foreground_color: 0, 0, 0, 1
+                hint_text_color: 0.5, 0.5, 0.5, 1
+
+            Button:
+                text: 'Şifreyi Kaydet'
+                size_hint_y: None
+                height: 40
+                background_color: 0, 0, 0, 0
+                on_release: root.save_password()
+                canvas.before:
+                    Color:
+                        rgba: (0.2, 0.6, 1, 1)
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [20]
+
+<SideBar@BoxLayout>:
+    orientation: 'vertical'
+    size_hint_x: None
+    width: 250
+    canvas.before:
+        Color:
+            rgba: 0.13, 0.13, 0.23, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        size_hint_y: None
+        height: 100
+        padding: [20, 10]
+        
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 80, 80
+            pos_hint: {'center_y': .5}
+
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        padding: [10, 20]
+
+        Button:
+            text: 'New chat'
+            size_hint_y: None
+            height: 45
+            background_color: 0, 0, 0, 0
+            halign: 'left'
+            text_size: self.size
+            padding: [20, 0]
+            color: 0.7, 0.7, 0.8, 1
+            on_release: app.root.current = 'chat'
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
+        Label:
+            text: '5988 remaining view plans'
+            size_hint_y: None
+            height: 30
+            color: 0.5, 0.5, 0.6, 1
+            font_size: '14sp'
+            text_size: self.size
+            padding: [20, 0]
+            halign: 'left'
+
+        Widget:
+            size_hint_y: 0.1
+
+        Button:
+            text: 'Clear conversations'
+            size_hint_y: None
+            height: 45
+            background_color: 0, 0, 0, 0
+            halign: 'left'
+            text_size: self.size
+            padding: [20, 0]
+            color: 0.7, 0.7, 0.8, 1
+            on_release: app.root.get_screen('chat').clear_messages()
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
+        Button:
+            text: 'Light mode'
+            size_hint_y: None
+            height: 45
+            background_color: 0, 0, 0, 0
+            halign: 'left'
+            text_size: self.size
+            padding: [20, 0]
+            color: 0.7, 0.7, 0.8, 1
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
+        Button:
+            text: 'Edit Profile'
+            size_hint_y: None
+            height: 45
+            background_color: 0, 0, 0, 0
+            halign: 'left'
+            text_size: self.size
+            padding: [20, 0]
+            color: 0.7, 0.7, 0.8, 1
+            on_release: app.root.current = 'profile'
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
+        Button:
+            text: 'Log out'
+            size_hint_y: None
+            height: 45
+            background_color: 0, 0, 0, 0
+            halign: 'left'
+            text_size: self.size
+            padding: [20, 0]
+            color: 0.7, 0.7, 0.8, 1
+            on_release: app.root.current = 'login'
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [10]
+
+        Widget:
+            size_hint_y: 0.6
+
+<ChatScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 70
+            padding: [20, 10]
+            spacing: 10
+            canvas.before:
+                Color:
+                    rgba: 0.13, 0.13, 0.23, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            Button:
+                text: 'Menu'
+                size_hint_x: None
+                width: 100
+                background_color: 0, 0, 0, 0
+                on_release: app.root.current = 'menu'
+                canvas.before:
+                    Color:
+                        rgba: 0.15, 0.15, 0.3, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [25]
+
+            Label:
+                text: f'Credits: {root.credits}'
+                color: 0.4, 0.5, 0.9, 1
+                bold: True
+
+            Button:
+                text: 'Buy Credits'
+                size_hint_x: None
+                width: 120
+                background_color: 0, 0, 0, 0
+                on_release: root.show_buy_credits()
+                canvas.before:
+                    Color:
+                        rgba: 0.4, 0.5, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [25]
+
+        RecycleView:
+            id: chat_history
+            viewclass: 'Message'
+            effect_cls: "ScrollEffect"
+            bar_width: 5
+            bar_color: [0.4, 0.5, 0.9, 0.5]
+            bar_inactive_color: [0.4, 0.5, 0.9, 0.2]
+            scroll_type: ['bars', 'content']
+
+            RecycleBoxLayout:
+                default_size: None, None
+                default_size_hint: 1, None
+                size_hint_y: None
+                height: self.minimum_height
+                orientation: 'vertical'
+                spacing: 15
+                padding: 20
+
+        BoxLayout:
+            size_hint_y: None
+            height: 90
+            padding: [20, 15]
+            spacing: 15
+            canvas.before:
+                Color:
+                    rgba: 0.13, 0.13, 0.23, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            TextInput:
+                id: message_input
+                hint_text: 'Write your message'
+                multiline: False
+                size_hint_y: None
+                height: 55
+                pos_hint: {'center_y': .5}
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            Button:
+                size_hint: None, None
+                size: 55, 55
+                background_color: 0, 0, 0, 0
+                on_release: root.send_message()
+                pos_hint: {'center_y': .5}
+                canvas.before:
+                    Color:
+                        rgba: 0.4, 0.5, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [27]
+                Image:
+                    source: 'assets/send.png'
+                    center: self.parent.center
+                    size: 22, 22
+
+<ProfileScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 60
+            spacing: 10
+
+            Button:
+                text: 'Back'
+                size_hint_x: None
+                width: 60
+                background_color: 0, 0, 0, 0
+                on_release: app.root.current = 'chat'
+                Image:
+                    source: 'assets/back.png'
+                    center: self.parent.center
+                    size: 20, 20
+
+            Label:
+                text: 'Profile'
+                font_size: '24sp'
+                bold: True
+                color: 1, 1, 1, 1
+
+        Image:
+            source: 'assets/user.png'
+            size_hint: None, None
+            size: 120, 120
+            pos_hint: {'center_x': .5}
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 15
+            padding: [20, 20]
+            size_hint_y: None
+            height: 200
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [20]
+
+            Label:
+                text: f'Username: {root.user_data["username"]}'
+                color: 1, 1, 1, 1
+                size_hint_y: None
+                height: 30
+                halign: 'left'
+                text_size: self.width, None
+
+            Label:
+                text: f'Email: {root.user_data["email"]}'
+                color: 1, 1, 1, 1
+                size_hint_y: None
+                height: 30
+                halign: 'left'
+                text_size: self.width, None
+
+            Label:
+                text: f'Total Credits Used: {root.user_data["total_credits"]}'
+                color: 1, 1, 1, 1
+                size_hint_y: None
+                height: 30
+                halign: 'left'
+                text_size: self.width, None
+
+            Label:
+                text: f'Messages Sent: {root.user_data["messages_sent"]}'
+                color: 1, 1, 1, 1
+                size_hint_y: None
+                height: 30
+                halign: 'left'
+                text_size: self.width, None
+
+        Button:
+            text: 'Buy Credits'
+            size_hint_y: None
+            height: 55
+            size_hint_x: 0.8
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            on_release: app.root.current = 'buy_credits'
+            canvas.before:
+                Color:
+                    rgba: 0.4, 0.5, 0.9, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [27]
+
+        Button:
+            text: 'Logout'
+            size_hint_y: None
+            height: 55
+            size_hint_x: 0.8
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            color: 0.8, 0.2, 0.2, 1
+            on_release: root.logout()
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [27]
+
+<BuyCreditsScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            spacing: 10
+
+            Button:
+                text: 'Geri'
+                size_hint_x: None
+                width: 100
+                background_color: 0, 0, 0, 0
+                on_release: root.manager.current = 'chat'
+                canvas.before:
+                    Color:
+                        rgba: 0.15, 0.15, 0.3, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [25]
+
+            Label:
+                text: 'Kredi Satın Al'
+                font_size: 24
+                color: 1, 1, 1, 1
+
+        Label:
+            id: warning_label
+            text: 'Kredileriniz tükendi! Sohbete devam etmek için lütfen kredi satın alın.'
+            color: 1, 0.8, 0.2, 1
+            size_hint_y: None
+            height: 40
+            opacity: 0
+            bold: True
+
+        ScrollView:
+            do_scroll_x: False
+            do_scroll_y: True
+            
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: 20
+                padding: [0, 20]
+
+                # Credit packages
+                GridLayout:
+                    id: packages_grid
+                    cols: 2
+                    spacing: 20
+                    size_hint_y: None
+                    height: self.minimum_height
+
+                    Button:
+                        text: '[b]100 Kredi[/b]\n[size=14]10₺[/size]\n[size=12]Başlangıç Paketi[/size]'
+                        credits: '100'
+                        markup: True
+                        size_hint_y: None
+                        height: 120
+                        background_color: 0.15, 0.15, 0.3, 1
+                        on_release: root.select_package(100, '10₺')
+                        canvas.before:
+                            Color:
+                                rgba: self.background_color
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [20]
+
+                    Button:
+                        text: '[b]250 Kredi[/b]\n[size=14]20₺[/size]\n[size=12]Standart Paket[/size]'
+                        credits: '250'
+                        markup: True
+                        size_hint_y: None
+                        height: 120
+                        background_color: 0.15, 0.15, 0.3, 1
+                        on_release: root.select_package(250, '20₺')
+                        canvas.before:
+                            Color:
+                                rgba: self.background_color
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [20]
+
+                    Button:
+                        text: '[b]500 Kredi[/b]\n[size=14]35₺[/size]\n[size=12]Premium Paket[/size]'
+                        credits: '500'
+                        markup: True
+                        size_hint_y: None
+                        height: 120
+                        background_color: 0.15, 0.15, 0.3, 1
+                        on_release: root.select_package(500, '35₺')
+                        canvas.before:
+                            Color:
+                                rgba: self.background_color
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [20]
+
+                    Button:
+                        text: '[b]1000 Kredi[/b]\n[size=14]60₺[/size]\n[size=12]VIP Paket[/size]'
+                        credits: '1000'
+                        markup: True
+                        size_hint_y: None
+                        height: 120
+                        background_color: 0.15, 0.15, 0.3, 1
+                        on_release: root.select_package(1000, '60₺')
+                        canvas.before:
+                            Color:
+                                rgba: self.background_color
+                            RoundedRectangle:
+                                pos: self.pos
+                                size: self.size
+                                radius: [20]
+
+                # Payment form
+                BoxLayout:
+                    id: payment_form
+                    orientation: 'vertical'
+                    spacing: 15
+                    size_hint_y: None
+                    height: 400 if not self.disabled else 0
+                    opacity: 0
+                    disabled: True
+
+                    canvas.before:
+                        Color:
+                            rgba: 0.15, 0.15, 0.3, 1
+                        RoundedRectangle:
+                            pos: self.pos
+                            size: self.size
+                            radius: [20]
+
+                    BoxLayout:
+                        orientation: 'vertical'
+                        padding: [20, 20]
+                        spacing: 15
+
+                        Label:
+                            text: 'Kart Bilgileri'
+                            font_size: 20
+                            size_hint_y: None
+                            height: 40
+                            color: 1, 1, 1, 1
+                            bold: True
+
+                        TextInput:
+                            id: card_number
+                            hint_text: 'Kart Numarası'
+                            size_hint_y: None
+                            height: 50
+                            multiline: False
+                            background_color: 0.2, 0.2, 0.35, 1
+                            foreground_color: 1, 1, 1, 1
+                            hint_text_color: 0.5, 0.5, 0.7, 1
+                            padding: [15, 15]
+                            font_size: '16sp'
+                            on_text: root.format_card_number(self, self.text)
+                            on_text_validate: root.on_text_validate(self)
+
+                        TextInput:
+                            id: card_holder
+                            hint_text: 'Kart Sahibinin Adı'
+                            size_hint_y: None
+                            height: 50
+                            multiline: False
+                            background_color: 0.2, 0.2, 0.35, 1
+                            foreground_color: 1, 1, 1, 1
+                            hint_text_color: 0.5, 0.5, 0.7, 1
+                            padding: [15, 15]
+                            font_size: '16sp'
+                            on_text_validate: root.on_text_validate(self)
+
+                        BoxLayout:
+                            size_hint_y: None
+                            height: 50
+                            spacing: 10
+
+                            TextInput:
+                                id: expiry_date
+                                hint_text: 'AA/YY'
+                                size_hint_x: 0.6
+                                multiline: False
+                                background_color: 0.2, 0.2, 0.35, 1
+                                foreground_color: 1, 1, 1, 1
+                                hint_text_color: 0.5, 0.5, 0.7, 1
+                                padding: [15, 15]
+                                font_size: '16sp'
+                                on_text: root.format_expiry_date(self, self.text)
+                                on_text_validate: root.on_text_validate(self)
+
+                            TextInput:
+                                id: cvv
+                                hint_text: 'CVV'
+                                size_hint_x: 0.4
+                                multiline: False
+                                background_color: 0.2, 0.2, 0.35, 1
+                                foreground_color: 1, 1, 1, 1
+                                hint_text_color: 0.5, 0.5, 0.7, 1
+                                padding: [15, 15]
+                                font_size: '16sp'
+                                password: True
+                                on_text_validate: root.on_text_validate(self)
+
+                        Widget:
+                            size_hint_y: None
+                            height: 20
+
+                        Button:
+                            text: 'Ödeme Yap'
+                            size_hint_y: None
+                            height: 50
+                            background_color: 0, 0, 0, 0
+                            on_release: root.buy_credits()
+                            canvas.before:
+                                Color:
+                                    rgba: 0.4, 0.5, 0.9, 1
+                                RoundedRectangle:
+                                    pos: self.pos
+                                    size: self.size
+                                    radius: [25]
+
+                        Label:
+                            id: success_label
+                            text: 'Ödeme başarılı! Kredileriniz yüklendi.'
+                            color: 0.2, 0.8, 0.2, 1
+                            size_hint_y: None
+                            height: 40
+                            opacity: 0
+                            bold: True
+
+<UserInfoScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [40, 20]
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: 'ECHO AI'
+            font_size: '40sp'
+            size_hint_y: None
+            height: 60
+            color: 1, 1, 1, 1
+            bold: True
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint: None, None
+            size: 120, 120
+            pos_hint: {'center_x': .5}
+
+        Widget:
+            size_hint_y: 0.1
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 15
+            size_hint_y: None
+            height: 180
+            pos_hint: {'center_x': .5}
+
+            TextInput:
+                id: email
+                hint_text: 'Email'
+                multiline: False
+                size_hint_y: None
+                height: 55
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            TextInput:
+                id: password
+                hint_text: 'Password'
+                multiline: False
+                password: True
+                size_hint_y: None
+                height: 55
+                padding: [20, 15]
+                background_color: 0.15, 0.15, 0.3, 1
+                cursor_color: 1, 1, 1, 1
+                foreground_color: 1, 1, 1, 1
+                hint_text_color: 0.5, 0.5, 0.7, 1
+                font_size: '16sp'
+
+            Button:
+                text: 'Login'
+                size_hint_y: None
+                height: 55
+                background_color: 0, 0, 0, 0
+                color: 1, 1, 1, 1
+                bold: True
+                font_size: '18sp'
+                on_release: root.validate_and_continue()
+                canvas.before:
+                    Color:
+                        rgba: 0.4, 0.5, 0.9, 1
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [27]
+
+        Button:
+            text: 'Forgot password?'
+            color: 0.4, 0.5, 0.9, 1
+            size_hint_y: None
+            height: 40
+            font_size: '16sp'
+            background_color: 0, 0, 0, 0
+            on_release: app.root.current = 'forgot_password'
+
+        Widget:
+            size_hint_y: 0.1
+
+        Label:
+            text: 'Have no account yet?'
+            color: 0.7, 0.7, 0.8, 1
+            size_hint_y: None
+            height: 30
+            font_size: '16sp'
+
+        Button:
+            text: 'Sign Up'
+            size_hint_y: None
+            height: 55
+            size_hint_x: 0.8
+            pos_hint: {'center_x': .5}
+            background_color: 0, 0, 0, 0
+            color: 1, 1, 1, 1
+            font_size: '18sp'
+            canvas.before:
+                Color:
+                    rgba: 0.15, 0.15, 0.3, 1
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [27]
+
+        Widget:
+            size_hint_y: 0.1
+
+<MenuScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 20
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: 0.1, 0.1, 0.2, 1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Label:
+            text: 'ECHO AI'
+            font_size: '40sp'
+            size_hint_y: None
+            height: 60
+            color: 1, 1, 1, 1
+            bold: True
+
+        Image:
+            source: 'assets/logo.png'
+            size_hint_y: 0.3
+
+        BoxLayout:
+            orientation: 'vertical'
+            spacing: 15
+            size_hint_y: 0.4
+            padding: [20, 0]
+
+            Button:
+                text: 'Start Chat'
+                font_size: '24sp'
+                size_hint_y: None
+                height: '60dp'
+                background_color: 0.3, 0.36, 0.88, 1
+                on_release: app.root.current = 'chat'
+
+            Button:
+                text: 'Buy Credits'
+                font_size: '24sp'
+                size_hint_y: None
+                height: '60dp'
+                background_color: 0.3, 0.36, 0.88, 1
+                on_release: app.root.current = 'buy_credits'
+
+            Button:
+                text: 'Profile'
+                font_size: '24sp'
+                size_hint_y: None
+                height: '60dp'
+                background_color: 0.3, 0.36, 0.88, 1
+                on_release: app.root.current = 'profile'
+
+        BoxLayout:
+            orientation: 'horizontal'
+            size_hint_y: 0.1
+            padding: [20, 0]
+
+            Label:
+                text: 'Credits:'
+                font_size: '20sp'
+                size_hint_x: 0.3
+                color: 0.3, 0.36, 0.88, 1
+
+            Label:
+                id: credits_label
+                text: '0'
+                font_size: '20sp'
+                size_hint_x: 0.7
+                color: 0.3, 0.36, 0.88, 1
+
+        Button:
+            text: 'Logout'
+            font_size: '20sp'
+            size_hint: None, None
+            size: '150dp', '50dp'
+            pos_hint: {'center_x': 0.5}
+            background_color: 0.8, 0.2, 0.2, 1
+            on_release: app.root.current = 'welcome' 
